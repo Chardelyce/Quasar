@@ -108,6 +108,66 @@ class Neutron(Parser):
     def expr(self, p):
         return ('num', p.NUMBER)
 
+#executing code 
+class electron:
+    def __init__(self, tree, env):
+        self.env = env
+        result = self.walkTree(tree)
+        if result is not None and isinstance(result, int):
+            print(result)
+        if isinstance(result, str) and result[0] == '"':
+            print(result)
+  
+    def walkTree(self, node):
+  
+        if isinstance(node, int):
+            return node
+        if isinstance(node, str):
+            return node
+  
+        if node is None:
+            return None
+  
+        if node[0] == 'program':
+            if node[1] == None:
+                self.walkTree(node[2])
+            else:
+                self.walkTree(node[1])
+                self.walkTree(node[2])
+  
+        if node[0] == 'num':
+            return node[1]
+  
+        if node[0] == 'str':
+            return node[1]
+  
+        if node[0] == 'add':
+            return self.walkTree(node[1]) + self.walkTree(node[2])
+        elif node[0] == 'sub':
+            return self.walkTree(node[1]) - self.walkTree(node[2])
+        elif node[0] == 'mul':
+            return self.walkTree(node[1]) * self.walkTree(node[2])
+        elif node[0] == 'div':
+            return self.walkTree(node[1]) / self.walkTree(node[2])
+  
+        if node[0] == 'var_assign':
+            self.env[node[1]] = self.walkTree(node[2])
+            return node[1]
+  
+        if node[0] == 'var':
+            try:
+                return self.env[node[1]]
+            except LookupError:
+                print( colored ("Undefined variable '"+node[1]+"' found!",'green'))
+                return 0
+
+
+#displaying to term
+
+
+if __name__ == '__main__':
+    lexer = Protons()
+    parser = Neutron()
 print (colored('      • Quasar                       ', 'red'))
 print('                           ')
 print (colored('"The most basic programming language' , 'yellow'))
@@ -117,4 +177,23 @@ print (colored('chardelyce edwards 2022', 'blue'))
 print (colored('https://github.com/chardelyce/Quasar', 'blue'))
 print('--------------------------------')
 print(colored('Type "help" , "credits" , "license" for more information', 'green'))
+
+
+env = {}
+      
+while True:
+          
+        try:
+            text = input(colored('Quasar ⚛', 'red'))
+          
+        except EOFError:
+            break
+          
+        if text:
+            tree = parser.parse(lexer.tokenize(text))
+            electron(tree, env)
+
+
+
+
 
