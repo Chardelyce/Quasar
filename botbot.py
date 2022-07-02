@@ -116,4 +116,5 @@ print('                           ')
 print (colored('chardelyce edwards 2022', 'blue'))
 print (colored('https://github.com/chardelyce/Quasar', 'blue'))
 print('--------------------------------')
+print(colored('Type "help" , "credits" , "license" for more information', 'green'))
 
