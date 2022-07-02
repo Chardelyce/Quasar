@@ -20,9 +20,11 @@ from termcolor import colored
 class Protons(Lexer):
     tokens = { NAME, NUMBER, STRING, FLOAT, INT}
     ignore = '\t '
+    #literals remember to  put in literal cat ,
+    #  then def it then  precedence it  then node
     literals = { '=', '+', '-', '/', 
-                '*', '(', ')', ',', ';'}
-  
+                '*', '(', ')', ',', ';','%'}
+
     def make_number(self):
         num_str = ''
         dot_count = 0
@@ -69,7 +71,7 @@ class Neutron(Parser):
   
     precedence = (
         ('left', '+', '-'),
-        ('left', '*', '/'),
+        ('left', '*', '/','%'),
         ('right', 'UMINUS'),
     )
   
@@ -95,7 +97,10 @@ class Neutron(Parser):
     @_('expr')
     def statement(self, p):
         return (p.expr)
-  
+  #math 
+    @_('expr "%" expr')
+    def expr (self, p):
+        return ('mod', p.expr0, p.expr1)
     @_('expr "+" expr')
     def expr(self, p):
         return ('add', p.expr0, p.expr1)
@@ -165,7 +170,8 @@ class electron:
             return self.walkTree(node[1]) * self.walkTree(node[2])
         elif node[0] == 'div':
             return self.walkTree(node[1]) / self.walkTree(node[2])
-  
+        elif node[0] == 'mod':
+            return self.walkTree(node[1]) % self.walkTree(node[2])
         if node[0] == 'var_assign':
             self.env[node[1]] = self.walkTree(node[2])
             return node[1]
@@ -174,7 +180,7 @@ class electron:
             try:
                 return self.env[node[1]]
             except LookupError:
-                print( colored ("Undefined variable '"+node[1]+"' found!",'green'))
+                print( colored ("Variable '"+node[1]+"' not defined",'green'))
                 return 0
 
 
