@@ -18,12 +18,28 @@ from termcolor import colored
  """
 
 class Protons(Lexer):
-    tokens = { NAME, NUMBER, STRING }
+    tokens = { NAME, NUMBER, STRING, FLOAT, INT}
     ignore = '\t '
     literals = { '=', '+', '-', '/', 
                 '*', '(', ')', ',', ';'}
   
-  
+    def make_number(self):
+        num_str = ''
+        dot_count = 0
+
+        while self.current_char != None and self.current_char in DIGITS + '.':
+            if self.current_char == '.':
+                if dot_count == 1: break
+                dot_count += 1
+                num_str += '.'
+            else:
+                num_str += self.current_char
+            self.advance()
+
+        if dot_count == 0:
+            return tokens(INT, int(num_str))
+        else:
+            return tokens(FLOAT, float(num_str))
     
     NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
@@ -176,7 +192,6 @@ print('                           ')
 print (colored('chardelyce edwards 2022', 'blue'))
 print (colored('https://github.com/chardelyce/Quasar', 'blue'))
 print('--------------------------------')
-print(colored('Type "help" , "credits" , "license" for more information', 'green'))
 
 
 env = {}
@@ -184,7 +199,7 @@ env = {}
 while True:
           
         try:
-            text = input(colored('Quasar ⚛', 'red'))
+            text = input(colored('Quasar ⚛ ', 'red'))
           
         except EOFError:
             break
