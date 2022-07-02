@@ -1,5 +1,7 @@
 
 from sly import Lexer 
+from sly import Parser
+from termcolor import colored
 
 """ 
  .::::::.    ...    :::  :::.     .::::::.   :::.    :::::::..   
@@ -44,14 +46,74 @@ class Protons(Lexer):
     def newline(self, t):
         self.lineno = t.value.count('\n')
 
+#parser class 
+class Neutron(Parser):
 
+    tokens = Protons.tokens
+  
+    precedence = (
+        ('left', '+', '-'),
+        ('left', '*', '/'),
+        ('right', 'UMINUS'),
+    )
+  
+    def __init__(self):
+        self.env = { }
+  
+    @_('')
+    def statement(self, p):
+        pass
+  
+    @_('var_assign')
+    def statement(self, p):
+        return p.var_assign
+  
+    @_('NAME "=" expr')
+    def var_assign(self, p):
+        return ('var_assign', p.NAME, p.expr)
+  
+    @_('NAME "=" STRING')
+    def var_assign(self, p):
+        return ('var_assign', p.NAME, p.STRING)
+  
+    @_('expr')
+    def statement(self, p):
+        return (p.expr)
+  
+    @_('expr "+" expr')
+    def expr(self, p):
+        return ('add', p.expr0, p.expr1)
+  
+    @_('expr "-" expr')
+    def expr(self, p):
+        return ('sub', p.expr0, p.expr1)
+  
+    @_('expr "*" expr')
+    def expr(self, p):
+        return ('mul', p.expr0, p.expr1)
+  
+    @_('expr "/" expr')
+    def expr(self, p):
+        return ('div', p.expr0, p.expr1)
+  
+    @_('"-" expr %prec UMINUS')
+    def expr(self, p):
+        return p.expr
+  
+    @_('NAME')
+    def expr(self, p):
+        return ('var', p.NAME)
+  
+    @_('NUMBER')
+    def expr(self, p):
+        return ('num', p.NUMBER)
 
-print('      • Quasar                       ')
+print (colored('      • Quasar                       ', 'red'))
 print('                           ')
-print('"the most basic programming language')
-print('if you have a very limited keyboard"')
+print (colored('"The most basic programming language' , 'yellow'))
+print (colored('if you have a very limited keyboard"', 'yellow'))
 print('                           ')
-print('chardelyce edwards 2022')
-print('https://github.com/chardelyce/Quasar')
+print (colored('chardelyce edwards 2022', 'blue'))
+print (colored('https://github.com/chardelyce/Quasar', 'blue'))
 print('--------------------------------')
 
