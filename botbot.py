@@ -14,7 +14,7 @@ from termcolor import colored
             "the most basic programming language 
             if you have a very limited keyboard"
                             
-                created by: Chardleyce Edwards  
+                created by: Chardelyce Edwards  
  """
 
 class Protons(Lexer):
