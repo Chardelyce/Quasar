@@ -24,4 +24,5 @@
 <div style="text-align: center;">&nbsp;</div>
 <div style="text-align: center;">&nbsp;</div>
 <div style="text-align: left;"><span style="color: #008000;">&nbsp;Copy below and paste it in your terminal to use!</span></div>
+<div style="text-align: left;"><span style="color: #008000;">then cd to the directory where you clone it then run the "botbot.py" file&nbsp;</span></div>
 <div style="text-align: left;"><code>git clone https://github.com/Chardelyce/Quasar.git</code></div>
