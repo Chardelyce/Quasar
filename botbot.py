@@ -23,7 +23,7 @@ class Protons(Lexer):
     #literals remember to  put in literal cat ,
     #  then def it then  precedence it  then node
     literals = { '=', '+', '-', '/', 
-                '*', '(', ')', ',', ';','%'}
+                '*', '(', ')', ',', ';','%','if','else',':','?'}
 
     def make_number(self):
         num_str = ''
@@ -71,7 +71,7 @@ class Neutron(Parser):
   
     precedence = (
         ('left', '+', '-'),
-        ('left', '*', '/','%'),
+        ('left', '*', '/','%','?','if',':','else'),
         ('right', 'UMINUS'),
     )
   
@@ -101,6 +101,20 @@ class Neutron(Parser):
     @_('expr "%" expr')
     def expr (self, p):
         return ('mod', p.expr0, p.expr1)
+
+    @_('expr "?" expr')
+    def expr (self, p):
+        return ('quest', p.expr0, p.expr1)
+    @_('expr ":" expr')
+    def expr (self, p):
+        return ('col', p.expr0, p.expr1)
+    @_('expr "if" expr')
+    def expr (self, p):
+        return ('if', p.expr0, p.expr1)
+    @_('expr "else" expr')
+    def expr (self, p):
+        return ('else', p.expr0, p.expr1)
+
     @_('expr "+" expr')
     def expr(self, p):
         return ('add', p.expr0, p.expr1)
@@ -172,6 +186,16 @@ class electron:
             return self.walkTree(node[1]) / self.walkTree(node[2])
         elif node[0] == 'mod':
             return self.walkTree(node[1]) % self.walkTree(node[2])
+
+
+#conds
+
+
+        elif node[0] == 'if':
+            return self.walkTree(node[1]) % self.walkTree(node[2])
+
+
+
         if node[0] == 'var_assign':
             self.env[node[1]] = self.walkTree(node[2])
             return node[1]
