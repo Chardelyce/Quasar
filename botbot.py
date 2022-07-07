@@ -71,7 +71,7 @@ class Neutron(Parser):
   
     precedence = (
         ('left', '+', '-'),
-        ('left', '*', '/','%','?','if',':','else'),
+        ('left', '*', '/','%','?',':'),
         ('right', 'UMINUS'),
     )
   
@@ -108,13 +108,23 @@ class Neutron(Parser):
     @_('expr ":" expr')
     def expr (self, p):
         return ('col', p.expr0, p.expr1)
-    @_('expr "if" expr')
-    def expr (self, p):
-        return ('if', p.expr0, p.expr1)
-    @_('expr "else" expr')
-    def expr (self, p):
-        return ('else', p.expr0, p.expr1)
 
+
+    
+    def doIF_FALSE (tokens):
+        ii = 0
+        for token in tokens:
+            if token == "IF":
+                ii =1
+            elif token == "ENDIF":
+                ii +=1
+                break
+            else:
+                ii += 1
+        return ii
+
+
+  
     @_('expr "+" expr')
     def expr(self, p):
         return ('add', p.expr0, p.expr1)
@@ -191,9 +201,7 @@ class electron:
 #conds
 
 
-        elif node[0] == 'if':
-            return self.walkTree(node[1]) % self.walkTree(node[2])
-
+        
 
 
         if node[0] == 'var_assign':
@@ -214,7 +222,7 @@ class electron:
 if __name__ == '__main__':
     lexer = Protons()
     parser = Neutron()
-print (colored('      • Quasar                       ', 'red'))
+print (colored('      • Quasar -beta-                      ', 'red'))
 print('                           ')
 print (colored('"The most basic programming language' , 'yellow'))
 print (colored('if you have a very limited keyboard"', 'yellow'))
@@ -222,6 +230,7 @@ print('                           ')
 print (colored('chardelyce edwards 2022', 'blue'))
 print (colored('https://github.com/chardelyce/Quasar', 'blue'))
 print('--------------------------------')
+print (colored('Avail commands: + , -, * , % , /, var assigning,', 'green'))
 
 
 env = {}
